@@ -9,6 +9,7 @@ LOGIN=LOGIN
 PASSWORD=PASSWORD
 
 PATH_LOG=/var/log/dynhost
+CURRENT_DATE=`date`
 
 #
 # GET IPs
@@ -16,18 +17,6 @@ PATH_LOG=/var/log/dynhost
 
 HOST_IP=`dig +short $HOST`
 CURRENT_IP=`curl ifconfig.co`
-
-#
-# LOG
-#
-echo > $PATH_LOG
-echo "Run dyndns" >> $PATH_LOG
-date >> $PATH_LOG
-
-echo "Current IP" >> $PATH_LOG
-echo "$CURRENT_IP" >> $PATH_LOG
-echo "Host IP" >> $PATH_LOG
-echo "$HOST_IP" >> $PATH_LOG
 
 #
 # DO THE WORK
@@ -38,11 +27,12 @@ then
 else
         if [ "$HOST_IP" != "$CURRENT_IP" ]
         then
-                echo "IP has changed" >> $PATH_LOG
+                echo "$CURRENT_DATE"": Current IP:" "$CURRENT_IP" "and" "host IP:" "$HOST_IP" "   IP has changed!" >> $PATH_LOG
                 RES=`curl --user "$LOGIN:$PASSWORD" "https://www.ovh.com/nic/update?system=dyndns&hostname=$HOST&myip=$CURRENT_IP"`
-                echo "Result request dynHost" >> $PATH_LOG
+                echo "Result request dynHost:" >> $PATH_LOG
                 echo "$RES" >> $PATH_LOG
         else
-                echo "IP has not changed" >> $PATH_LOG
+                echo "$CURRENT_DATE"": Current IP:" "$CURRENT_IP" "and" "Host IP:" "$HOST_IP" "   IP has not changed" >> $PATH_LOG
         fi
 fi
+
