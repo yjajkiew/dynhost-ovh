@@ -14,17 +14,16 @@ if [ -z $CURRENT_IP ]
 then
   CURRENT_IP=$(dig +short myip.opendns.com @resolver1.opendns.com)
 fi
+CURRENT_DATETIME=$(date -R)
 
 # Update dynamic IPv4, if needed
 if [ -z $CURRENT_IP ] || [ -z $HOST_IP ]
 then
-  echo "No IP retrieved" >> $PATH_LOG
+  echo "[$CURRENT_DATETIME]: No IP retrieved" >> $PATH_LOG
 else
   if [ "$HOST_IP" != "$CURRENT_IP" ]
   then
-    echo "IP has changed" >> $PATH_LOG
     RES=$(curl -m 5 --user "$LOGIN:$PASSWORD" "https://www.ovh.com/nic/update?system=dyndns&hostname=$HOST&myip=$CURRENT_IP")
-    echo "Result request dynHost" >> $PATH_LOG
-    echo "$RES" >> $PATH_LOG
+    echo "[$CURRENT_DATETIME]: IPv4 has changed - request to OVH DynHost: $RES" >> $PATH_LOG
   fi
 fi
