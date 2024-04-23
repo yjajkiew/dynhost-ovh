@@ -4,11 +4,12 @@
 HOST=DOMAINE_NAME
 LOGIN=LOGIN
 PASSWORD=PASSWORD
+DNSSERVER=@dns102.ovh.net
 
 PATH_LOG=/var/log/dynhostovh.log
 
 # Get current IPv4 and corresponding configured
-HOST_IP=$(dig +short $HOST A)
+HOST_IP=$(dig $DNSSERVER +short $HOST A)
 CURRENT_IP=$(curl -m 5 -4 ifconfig.co 2>/dev/null)
 if [ -z $CURRENT_IP ]
 then
